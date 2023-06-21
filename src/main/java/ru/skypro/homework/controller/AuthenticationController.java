@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skypro.homework.dto.LoginReq;
-import ru.skypro.homework.dto.RegisterReq;
+import ru.skypro.homework.dto.LoginUser;
+import ru.skypro.homework.dto.RegisterUser;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.AuthService;
 
@@ -19,13 +19,14 @@ import static ru.skypro.homework.dto.Role.USER;
 @CrossOrigin(value = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+//Контроллер для Аутентификации
+public class AuthenticationController {
 
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginReq req) {
-        if (authService.login(req.getUsername(), req.getPassword())) {
+    public ResponseEntity<?> login(@RequestBody LoginUser log) {
+        if (authService.login(log.getLogin(), log.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -33,9 +34,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterReq req) {
-        Role role = req.getRole() == null ? USER : req.getRole();
-        if (authService.register(req, role)) {
+    public ResponseEntity<?> register(@RequestBody RegisterUser reg) {
+        Role role = reg.getRole() == null ? USER : reg.getRole();
+        if (authService.register(reg, role)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

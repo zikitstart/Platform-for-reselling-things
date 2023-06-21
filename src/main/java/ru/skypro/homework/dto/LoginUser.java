@@ -3,8 +3,8 @@ package ru.skypro.homework.dto;
 import lombok.Data;
 
 @Data
-public class LoginReq {
+//Аутентификация
+public class LoginUser {
+    private String login;
     private String password;
-    private String username;
-
 }

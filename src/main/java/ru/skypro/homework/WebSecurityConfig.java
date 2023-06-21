@@ -13,6 +13,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+//Под вопрос
 public class WebSecurityConfig {
 
   private static final String[] AUTH_WHITELIST = {

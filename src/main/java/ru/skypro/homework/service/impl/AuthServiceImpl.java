@@ -5,11 +5,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.RegisterReq;
+import ru.skypro.homework.dto.RegisterUser;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.AuthService;
 
 @Service
+//Под вопрос
 public class AuthServiceImpl implements AuthService {
 
   private final UserDetailsManager manager;
@@ -31,15 +32,15 @@ public class AuthServiceImpl implements AuthService {
   }
 
   @Override
-  public boolean register(RegisterReq registerReq, Role role) {
-    if (manager.userExists(registerReq.getUsername())) {
+  public boolean register(RegisterUser registerUser, Role role) {
+    if (manager.userExists(registerUser.getLogin())) {
       return false;
     }
     manager.createUser(
         User.builder()
             .passwordEncoder(this.encoder::encode)
-            .password(registerReq.getPassword())
-            .username(registerReq.getUsername())
+            .password(registerUser.getPassword())
+            .username(registerUser.getLogin())
             .roles(role.name())
             .build());
     return true;
