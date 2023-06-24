@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.service.CommentService;
 
 @Slf4j
@@ -24,15 +26,16 @@ public class CommentController {
     @Operation(
             summary = "Получить комментарии объявления"
     )
-    public ResponseEntity<?> getAdComments (@PathVariable long idAd) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<CommentDto> getAdComments (@PathVariable long idAd) {
+        CommentDto commentDto = new CommentDto();
+        return ResponseEntity.ok(commentDto);
     }
 
     @PostMapping("/{idAd}/comments")
     @Operation(
             summary = "Добавить комментарий к объявлению"
     )
-    public ResponseEntity<?> addCommentToAd (@PathVariable long idAd, @RequestParam String text) {
+    public ResponseEntity<Void> addCommentToAd (@PathVariable long idAd, @RequestBody CommentDto comment) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -40,7 +43,7 @@ public class CommentController {
     @Operation(
             summary = "Удалить комментарий"
     )
-    public ResponseEntity<?> deleteCommentFromAd (@PathVariable long idAd, @PathVariable long idComment) {
+    public ResponseEntity<Void> deleteCommentFromAd (@PathVariable long idAd, @PathVariable long idComment) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -48,7 +51,7 @@ public class CommentController {
     @Operation(
             summary = "Обновить комментарий"
     )
-    private ResponseEntity<?> updateComment (@PathVariable long idAd, @PathVariable long idComment) {
+    private ResponseEntity<?> updateComment (@PathVariable long idAd, @PathVariable long idComment, @RequestBody CommentDto comment) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

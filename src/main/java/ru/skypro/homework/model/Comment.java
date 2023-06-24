@@ -2,20 +2,16 @@ package ru.skypro.homework.model;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 //Комментарии
 public class Comment {
 
-    //id пользователя
-    private long idUser;
-    //аватарка пользователя
-    private byte[] profilePicture;
-    //имя пользователя
-    private String firstName;
-    //id комментария
-    private long idComment;
-    //id объявления
-    private long idAd;
-    //текст объявления
-    private String text;
+    private Long idComment;   //id комментария
+    private User user;   //пользователь
+    private Ad ads;   //обьявление
+    private LocalDateTime createdAt;   //дата комментария
+    private String text;   //текст
+
 }

@@ -7,16 +7,12 @@ import ru.skypro.homework.dto.Role;
 //Пользователь
 public class User {
 
-    //id пользователя
-    private long idUser;
-    private String login;
+    private Long idUser;   //id пользователя
+    private String userName;
     private String password;
     private String firstName;
     private String lastName;
     private String phone;
-    private String email;
-    //аватарка пользователя
-    private byte[] profilePicture;
-    //роль: админ/пользователь
-    private Role role;
+    private Image image;   // ссылка на картинку объявления
+    private Role role;   //роль: админ/пользователь
 }

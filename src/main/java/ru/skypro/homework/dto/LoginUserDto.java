@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 //Аутентификация
-public class LoginUser {
-    private String login;
+public class LoginUserDto {
+    private String userName;
     private String password;
 }
