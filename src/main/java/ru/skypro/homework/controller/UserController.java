@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.NewPasswordDto;
+import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
 @Slf4j
@@ -26,7 +28,7 @@ public class UserController {
     @Operation(
             summary = "Обновление пароля"
     )
-    public ResponseEntity<?> passwordUpdate (@RequestParam String currentPassword,@RequestParam String newPassword) {
+    public ResponseEntity<Void> passwordUpdate (@RequestBody NewPasswordDto newPasswordDto) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -34,7 +36,7 @@ public class UserController {
     @Operation(
             summary = "Получить информацию об авторизованном пользователе"
     )
-    public ResponseEntity<?> getInformationAboutAnAuthorizedUser () {
+    public ResponseEntity<UserDto> getInformationAboutAnAuthorizedUser () {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -42,15 +44,15 @@ public class UserController {
     @Operation(
             summary = "Обновить информацию об авторизованном пользователе"
     )
-    public ResponseEntity<?> updateInformationAboutAnAuthorizedUser (@RequestParam String firstName, @RequestParam String lastName, @RequestParam String phone) {
+    public ResponseEntity<UserDto> updateInformationAboutAnAuthorizedUser (@RequestBody UserDto userDto) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PatchMapping(value = "/me/image",consumes = MediaType.IMAGE_JPEG_VALUE)
+    @PatchMapping(value = "/me/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Обновить аватар авторизованного пользователя"
     )
-    public ResponseEntity<?> updateTheAvatarOfAnAuthorizedUser (@RequestParam MultipartFile profilePicture) {
+    public ResponseEntity<Void> updateTheAvatarOfAnAuthorizedUser (@RequestParam MultipartFile profilePicture) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

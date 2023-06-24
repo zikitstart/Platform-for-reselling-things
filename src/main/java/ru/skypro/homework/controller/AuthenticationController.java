@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skypro.homework.dto.LoginUser;
-import ru.skypro.homework.dto.RegisterUser;
+import ru.skypro.homework.dto.LoginUserDto;
+import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.AuthService;
 
@@ -25,8 +25,8 @@ public class AuthenticationController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginUser log) {
-        if (authService.login(log.getLogin(), log.getPassword())) {
+    public ResponseEntity<?> login(@RequestBody LoginUserDto log) {
+        if (authService.login(log.getUserName(), log.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -34,7 +34,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterUser reg) {
+    public ResponseEntity<?> register(@RequestBody RegisterUserDto reg) {
         Role role = reg.getRole() == null ? USER : reg.getRole();
         if (authService.register(reg, role)) {
             return ResponseEntity.ok().build();

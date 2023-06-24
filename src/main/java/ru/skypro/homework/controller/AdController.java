@@ -9,7 +9,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.skypro.homework.dto.AdDto;
+import ru.skypro.homework.dto.CreateAdDto;
+import ru.skypro.homework.dto.ResponseWrapperAdsDto;
+import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.service.AdsService;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -18,7 +26,7 @@ import ru.skypro.homework.service.AdsService;
 @RequestMapping("/ads")
 @Tag(name = "Объявления", description = "CRUD- методы для работы с обьявлениями")
 //Контроллер для работы с Объявлениями
-public class AdsController {
+public class AdController {
 
     private final AdsService adsService;
 
@@ -26,32 +34,34 @@ public class AdsController {
     @Operation(
             summary = "Получение всех объявлений"
     )
-    public ResponseEntity<?> getAllAds () {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<ResponseWrapperAdsDto> getAllAds () {
+        ResponseWrapperAdsDto responseWrapperAdsDto = new ResponseWrapperAdsDto();
+        return ResponseEntity.ok(responseWrapperAdsDto);
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Добавить объявление"
     )
-    //в параметрах будет DTO класс от ADS
-    public ResponseEntity<?> addAd () {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<AdDto> addAd (@RequestParam String title, @RequestParam String description, @RequestParam long price, @RequestParam MultipartFile image) throws IOException {
+        AdDto adDto = new AdDto();
+        return ResponseEntity.ok(adDto);
     }
 
     @GetMapping("/{idAd}")
     @Operation(
             summary = "Получить информацию об объявлении"
     )
-    public ResponseEntity<?> getInformationAboutTheAd (@PathVariable long idAd) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<AdDto> getInformationAboutTheAd (@PathVariable long idAd) {
+        AdDto adDto = new AdDto();
+        return ResponseEntity.ok(adDto);
     }
 
     @DeleteMapping("/{idAd}")
     @Operation(
             summary = "Удалить объявление"
     )
-    public ResponseEntity<?> deleteAd (@PathVariable long idAd) {
+    public ResponseEntity<Void> deleteAd (@PathVariable long idAd) {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -59,9 +69,9 @@ public class AdsController {
     @Operation(
             summary = "Обновить информацию об объявлении"
     )
-    //второй параметр DTO класса ADS
-    public ResponseEntity<?> updateAdInformation (@PathVariable long idAd) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<AdDto> updateAdInformation (@PathVariable long idAd, @RequestBody CreateAdDto createAdDto) {
+        AdDto adDto = new AdDto();
+        return ResponseEntity.ok(adDto);
     }
 
     @GetMapping("/me")
@@ -69,14 +79,16 @@ public class AdsController {
             summary = "Получить объявления авторизованного пользователя"
     )
     public ResponseEntity<?> getAdsFromAnAuthorizedUser () {
-        return ResponseEntity.status(HttpStatus.OK).build();
+        List<Ad> adList = new ArrayList<>();
+        return ResponseEntity.ok(adList);
     }
 
-    @PatchMapping(value = "/{idAd}/image",consumes = MediaType.IMAGE_JPEG_VALUE)
+    @PatchMapping(value = "/{idAd}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Обновить картинку объявления"
     )
-    public ResponseEntity<?> updateTheAdImage (@PathVariable long idAd, @RequestParam MultipartFile image) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<AdDto> updateTheAdImage (@PathVariable long idAd, @RequestParam MultipartFile image) throws IOException {
+        AdDto adDto = new AdDto();
+        return ResponseEntity.ok(adDto);
     }
 }
