@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.CreateAdDto;
 import ru.skypro.homework.dto.ResponseWrapperAdsDto;
-import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.service.AdsService;
 
 import java.io.IOException;
@@ -79,7 +78,7 @@ public class AdController {
             summary = "Получить объявления авторизованного пользователя"
     )
     public ResponseEntity<?> getAdsFromAnAuthorizedUser () {
-        List<Ad> adList = new ArrayList<>();
+        List<AdDto> adList = new ArrayList<>();
         return ResponseEntity.ok(adList);
     }
 

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.skypro.homework.dto.LoginUserDto;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AuthService;
+import ru.skypro.homework.utils.UserMapper;
 
 import static ru.skypro.homework.dto.Role.USER;
 
@@ -23,6 +25,8 @@ import static ru.skypro.homework.dto.Role.USER;
 public class AuthenticationController {
 
     private final AuthService authService;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginUserDto log) {
@@ -37,6 +41,7 @@ public class AuthenticationController {
     public ResponseEntity<?> register(@RequestBody RegisterUserDto reg) {
         Role role = reg.getRole() == null ? USER : reg.getRole();
         if (authService.register(reg, role)) {
+            userRepository.save(userMapper.registerUserDtoToUser(reg));
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
