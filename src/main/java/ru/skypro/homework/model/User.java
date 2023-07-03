@@ -23,7 +23,7 @@ public class User {
     @Column(name = "id_user")
     private Long idUser;   //id пользователя
     @Column(name = "user_name")
-    private String userName;
+    private String username;
     private String password;
     @Column(name = "first_name")
     private String firstName;
@@ -38,7 +38,7 @@ public class User {
     private Role role;   //роль: админ/пользователь
 
     public User(String userName, String password, String firstName, String lastName, String phone, Role role) {
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;

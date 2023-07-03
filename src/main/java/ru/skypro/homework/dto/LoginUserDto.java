@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 //Аутентификация
 public class LoginUserDto {
-    private String userName;
     private String password;
+    private String username;
 }

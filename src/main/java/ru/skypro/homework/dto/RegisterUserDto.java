@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 //Регистрация нового пользователя
 public class RegisterUserDto {
-    private String userName;
+    private String username;
     private String password;
     private String firstName;
     private String lastName;

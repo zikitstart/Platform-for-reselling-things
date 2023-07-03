@@ -14,7 +14,7 @@ public class UserMapper {
     public UserDto userToUserDto(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getIdUser());
-        dto.setEmail(user.getUserName());
+        dto.setEmail(user.getUsername());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setPhone(user.getPhone());
@@ -27,7 +27,7 @@ public class UserMapper {
     public User userDtoToUser(UserDto userDto) {
         User user = new User();
         user.setIdUser(userDto.getId());
-        user.setUserName(userDto.getEmail());
+        user.setUsername(userDto.getEmail());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhone(userDto.getPhone());
@@ -36,7 +36,7 @@ public class UserMapper {
 
     public User registerUserDtoToUser(RegisterUserDto registerUserDto) {
         User user = new User();
-        user.setUserName(registerUserDto.getUserName());
+        user.setUsername(registerUserDto.getUsername());
         user.setPassword(registerUserDto.getPassword());
         user.setFirstName(registerUserDto.getFirstName());
         user.setLastName(registerUserDto.getLastName());

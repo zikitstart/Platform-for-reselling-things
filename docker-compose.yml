@@ -7,8 +7,40 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+    links:
+      - backend
+    hostname: frontend
+
 
   backend:
     build: ./
     ports:
       - "8080:8080"
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    hostname: backend
+    restart: always
+
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - .:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: always
+    hostname: postgres

@@ -18,7 +18,7 @@ import ru.skypro.homework.utils.UserMapper;
 import static ru.skypro.homework.dto.Role.USER;
 
 @Slf4j
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 //Контроллер для Аутентификации
@@ -30,7 +30,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginUserDto log) {
-        if (authService.login(log.getUserName(), log.getPassword())) {
+        if (authService.login(log.getUsername(), log.getPassword())) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
