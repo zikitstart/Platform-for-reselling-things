@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 
-import java.util.Optional;
-
 @Service
 public class UserDetailsManagerImpl implements UserDetailsManager {
     private final UserRepository userRepository;
@@ -19,7 +17,6 @@ public class UserDetailsManagerImpl implements UserDetailsManager {
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findUserByUsername(username).orElseThrow();
-        System.out.println(user.getUsername());
         return new UserPrincipal(user);
     }
 
