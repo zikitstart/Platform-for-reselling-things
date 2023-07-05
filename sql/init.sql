@@ -13,9 +13,9 @@ create table users
     user_name    VARCHAR(30) NOT NULL,
     password     VARCHAR(10485760) NOT NULL,
     first_name   VARCHAR(30) NOT NULL,
-    last_name    VARCHAR(40) NOT NULL,
-    phone        VARCHAR(30) NOT NULL,
-    role         role NOT NULL,
+    last_name    VARCHAR(40),
+    phone        VARCHAR(30),
+    role         role,
     img_id       BIGINT
 );
 
@@ -31,7 +31,7 @@ create table ads
 
 create table comments
 (
-    id_comment             BIGSERIAL PRIMARY KEY,
+    id_comment     BIGSERIAL PRIMARY KEY,
     created_at     TIMESTAMP,
     text           VARCHAR(500),
     ads_id         BIGINT,
