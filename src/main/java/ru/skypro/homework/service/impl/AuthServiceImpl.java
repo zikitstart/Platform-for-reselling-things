@@ -1,32 +1,33 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.service.AuthService;
+import ru.skypro.homework.service.UserService;
 
 @Service
 //Под вопрос
 public class AuthServiceImpl implements AuthService {
 
   private final UserDetailsManagerImpl manager;
-
   private final PasswordEncoder encoder;
+  private final UserService userService;
 
-  public AuthServiceImpl(UserDetailsManagerImpl manager, PasswordEncoder passwordEncoder) {
+  public AuthServiceImpl(UserDetailsManagerImpl manager, PasswordEncoder passwordEncoder, UserService userService) {
     this.manager = manager;
     this.encoder = passwordEncoder;
+    this.userService = userService;
   }
 
   @Override
-  public boolean login(String userName, String password) {
-    if (!manager.userExists(userName)) {
+  public boolean login(String username, String password) {
+    if (!manager.userExists(username.toLowerCase())) {
       return false;
     }
-    UserDetails userDetails = manager.loadUserByUsername(userName);
+    UserDetails userDetails = manager.loadUserByUsername(username.toLowerCase());
     return encoder.matches(password, userDetails.getPassword());
   }
 
@@ -35,13 +36,7 @@ public class AuthServiceImpl implements AuthService {
     if (manager.userExists(registerUserDto.getUsername())) {
       return false;
     }
-    manager.createUser(
-        User.builder()
-            .passwordEncoder(this.encoder::encode)
-            .password(registerUserDto.getPassword())
-            .username(registerUserDto.getUsername())
-            .roles(role.name())
-            .build());
+    userService.createUser(registerUserDto, role);
     return true;
   }
 }

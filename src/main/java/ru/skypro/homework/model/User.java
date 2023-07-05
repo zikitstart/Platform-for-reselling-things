@@ -1,9 +1,7 @@
 package ru.skypro.homework.model;
 
 import io.hypersistence.utils.hibernate.type.basic.PostgreSQLEnumType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import ru.skypro.homework.dto.Role;
@@ -12,8 +10,6 @@ import javax.persistence.*;
 
 @Data
 @TypeDef(name = "pgsql_enum", typeClass = PostgreSQLEnumType.class)
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "users")
 //Пользователь
@@ -36,13 +32,4 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Type(type = "pgsql_enum")
     private Role role;   //роль: админ/пользователь
-
-    public User(String userName, String password, String firstName, String lastName, String phone, Role role) {
-        this.username = userName;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phone = phone;
-        this.role = role;
-    }
 }

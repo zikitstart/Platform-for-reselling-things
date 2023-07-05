@@ -36,7 +36,7 @@ public class UserMapper {
 
     public User registerUserDtoToUser(RegisterUserDto registerUserDto) {
         User user = new User();
-        user.setUsername(registerUserDto.getUsername());
+        user.setUsername(registerUserDto.getUsername().toLowerCase());
         user.setPassword(registerUserDto.getPassword());
         user.setFirstName(registerUserDto.getFirstName());
         user.setLastName(registerUserDto.getLastName());
