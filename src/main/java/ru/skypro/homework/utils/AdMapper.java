@@ -30,7 +30,7 @@ public class AdMapper {
         fullAdDto.setAuthorFirstName(ad.getUser().getFirstName());
         fullAdDto.setAuthorLastName(ad.getUser().getLastName());
         fullAdDto.setDescription(ad.getDescription());
-        fullAdDto.setEmail(ad.getUser().getUserName());
+        fullAdDto.setEmail(ad.getUser().getUsername());
         fullAdDto.setImage(Optional.ofNullable(ad.getImage())
                 .map(Image::getPath)
                 .orElse(null));

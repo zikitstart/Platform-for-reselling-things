@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/ads")
@@ -42,9 +43,10 @@ public class AdController {
     @Operation(
             summary = "Добавить объявление"
     )
-    public ResponseEntity<AdDto> addAd (@RequestParam String title, @RequestParam String description, @RequestParam long price, @RequestParam MultipartFile image) throws IOException {
-        AdDto adDto = new AdDto();
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<?> createAd(@RequestPart("properties") CreateAdDto properties,
+                                      @RequestPart("image") MultipartFile file,
+                                      Authentication authentication) throws IOException {
+        return ResponseEntity.ok(adsService.createAd(properties, file, authentication));
     }
 
     @GetMapping("/{idAd}")
@@ -89,5 +91,11 @@ public class AdController {
     public ResponseEntity<AdDto> updateTheAdImage (@PathVariable long idAd, @RequestParam MultipartFile image) throws IOException {
         AdDto adDto = new AdDto();
         return ResponseEntity.ok(adDto);
+    }
+
+    // Поиск объявлений по title с IgnoreCase
+    @GetMapping("/find-by-title/{searchTitle}")
+    public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
+        return ResponseEntity.ok(adsService.findByTitleContainingIgnoreCase(searchTitle));
     }
 }

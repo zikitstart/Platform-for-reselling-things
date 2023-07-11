@@ -14,7 +14,7 @@ import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.service.UserService;
 
 @Slf4j
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
