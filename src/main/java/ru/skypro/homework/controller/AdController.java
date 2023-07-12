@@ -16,8 +16,6 @@ import ru.skypro.homework.dto.ResponseWrapperAdsDto;
 import ru.skypro.homework.service.AdsService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000")
@@ -35,8 +33,8 @@ public class AdController {
             summary = "Получение всех объявлений"
     )
     public ResponseEntity<ResponseWrapperAdsDto> getAllAds () {
-        ResponseWrapperAdsDto responseWrapperAdsDto = new ResponseWrapperAdsDto();
-        return ResponseEntity.ok(responseWrapperAdsDto);
+        ResponseWrapperAdsDto wrapperAdsDto = adsService.getAds();
+        return ResponseEntity.ok(wrapperAdsDto);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -79,9 +77,13 @@ public class AdController {
     @Operation(
             summary = "Получить объявления авторизованного пользователя"
     )
-    public ResponseEntity<?> getAdsFromAnAuthorizedUser () {
-        List<AdDto> adList = new ArrayList<>();
-        return ResponseEntity.ok(adList);
+    public ResponseEntity<?> getAdsFromAnAuthorizedUser (Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } else {
+            ResponseWrapperAdsDto wrapperAdsDto = adsService.getAdsMe(authentication);
+            return ResponseEntity.ok(wrapperAdsDto);
+        }
     }
 
     @PatchMapping(value = "/{idAd}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.CreateAdDto;
+import ru.skypro.homework.dto.ResponseWrapperAdsDto;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Image;
+import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.repository.UserRepository;
@@ -41,9 +43,32 @@ public class AdsServiceImpl implements AdsService {
         imageRepository.save(image);
         ad.setImage(image);
         adRepository.save(ad);
-
-
         return adMapper.adToAdDto(ad);
+    }
+
+    @Override
+    public ResponseWrapperAdsDto getAds() {
+        List<Ad> ads = adRepository.findAllAds();
+        ResponseWrapperAdsDto wrapperAds = new ResponseWrapperAdsDto();
+        wrapperAds.setCount(ads.size());
+        wrapperAds.setResults(
+                ads.stream()
+                        .map(adMapper::adToAdDto)
+                        .collect(Collectors.toList())
+        );
+        return wrapperAds;
+    }
+
+    @Override
+    public ResponseWrapperAdsDto getAdsMe(Authentication authentication) {
+        User user = userRepository.findUserByUsername(authentication.getName()).orElseThrow();
+        List<Ad> ads = adRepository.findAdsByUserIdUser(user.getIdUser());
+        ResponseWrapperAdsDto wrapperAds = new ResponseWrapperAdsDto();
+        wrapperAds.setCount(ads.size());
+        wrapperAds.setResults(ads.stream()
+                        .map(adMapper::adToAdDto)
+                        .collect(Collectors.toList()));
+        return wrapperAds;
     }
 
     @Override
