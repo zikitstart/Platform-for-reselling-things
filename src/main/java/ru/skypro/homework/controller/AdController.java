@@ -10,14 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skypro.homework.dto.AdDto;
-import ru.skypro.homework.dto.CreateAdDto;
-import ru.skypro.homework.dto.ResponseWrapperAdsDto;
+import ru.skypro.homework.dto.*;
+import ru.skypro.homework.model.Ad;
+import ru.skypro.homework.model.Image;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000")
@@ -30,12 +29,14 @@ public class AdController {
 
     private final AdsService adsService;
 
+    private final UserService userService;
+
     @GetMapping
     @Operation(
             summary = "Получение всех объявлений"
     )
     public ResponseEntity<ResponseWrapperAdsDto> getAllAds () {
-        ResponseWrapperAdsDto responseWrapperAdsDto = new ResponseWrapperAdsDto();
+        ResponseWrapperAdsDto responseWrapperAdsDto = adsService.findAllAds();
         return ResponseEntity.ok(responseWrapperAdsDto);
     }
 
@@ -46,6 +47,10 @@ public class AdController {
     public ResponseEntity<?> createAd(@RequestPart("properties") CreateAdDto properties,
                                       @RequestPart("image") MultipartFile file,
                                       Authentication authentication) throws IOException {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         return ResponseEntity.ok(adsService.createAd(properties, file, authentication));
     }
 
@@ -53,49 +58,101 @@ public class AdController {
     @Operation(
             summary = "Получить информацию об объявлении"
     )
-    public ResponseEntity<AdDto> getInformationAboutTheAd (@PathVariable long idAd) {
-        AdDto adDto = new AdDto();
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<FullAdDto> getInformationAboutTheAd(@PathVariable long idAd, Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        FullAdDto fullAdDto = adsService.getFullAd(idAd);
+        return ResponseEntity.ok(fullAdDto);
     }
 
     @DeleteMapping("/{idAd}")
     @Operation(
             summary = "Удалить объявление"
     )
-    public ResponseEntity<Void> deleteAd (@PathVariable long idAd) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> deleteAd (@PathVariable long idAd, Authentication authentication) {
+        ResponseEntity<?> response = checkAccess(idAd, authentication);
+
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } else {
+            adsService.deleteAd(idAd);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
     }
 
-    @PatchMapping("/{idAd}")
+    @PatchMapping(value = "/{idAd}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
             summary = "Обновить информацию об объявлении"
     )
-    public ResponseEntity<AdDto> updateAdInformation (@PathVariable long idAd, @RequestBody CreateAdDto createAdDto) {
-        AdDto adDto = new AdDto();
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<AdDto> updateAdInformation (@PathVariable long idAd,
+                                                      @RequestBody CreateAdDto createAdDto,
+                                                      Authentication authentication) {
+        ResponseEntity<?> response = checkAccess(idAd, authentication);
+
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } else {
+            AdDto adDto = adsService.updateAd(idAd, createAdDto);
+            return ResponseEntity.ok(adDto);
+        }
     }
 
     @GetMapping("/me")
     @Operation(
             summary = "Получить объявления авторизованного пользователя"
     )
-    public ResponseEntity<?> getAdsFromAnAuthorizedUser () {
-        List<AdDto> adList = new ArrayList<>();
-        return ResponseEntity.ok(adList);
+    public ResponseEntity<?> getAdsFromAnAuthorizedUser (Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        ResponseWrapperAdsDto responseWrapperAdsDto = adsService.findAdsByUser(authentication.getName());
+        return ResponseEntity.ok(responseWrapperAdsDto);
     }
 
     @PatchMapping(value = "/{idAd}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Обновить картинку объявления"
     )
-    public ResponseEntity<AdDto> updateTheAdImage (@PathVariable long idAd, @RequestParam MultipartFile image) throws IOException {
-        AdDto adDto = new AdDto();
-        return ResponseEntity.ok(adDto);
+    public ResponseEntity<?> updateTheAdImage (@PathVariable long idAd,
+                                                   @RequestParam MultipartFile file,
+                                                   Authentication authentication) throws IOException {
+        ResponseEntity<?> response = checkAccess(idAd, authentication);
+
+        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } else {
+            Ad ad = adsService.findAdById(idAd);
+            if (file != null) {
+                Image image = new Image();
+                image.setImage(file.getBytes());
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        adsService.updateAdImage(ad, image).getImage().getImage()
+                );
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
+        }
     }
 
     // Поиск объявлений по title с IgnoreCase
     @GetMapping("/find-by-title/{searchTitle}")
     public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
         return ResponseEntity.ok(adsService.findByTitleContainingIgnoreCase(searchTitle));
+    }
+
+    private ResponseEntity<?> checkAccess(Long id, Authentication authentication) {
+        Ad adModel = adsService.findAdById(id);
+
+        if (adModel == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else if (adModel.getUser().getUsername().equals(authentication.getName()) ||
+                userService.getUser(authentication.getName()).getRole() == Role.ADMIN) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }

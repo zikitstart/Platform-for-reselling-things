@@ -12,5 +12,8 @@ public interface AdRepository extends JpaRepository<Ad, Long> {
     @Query(value = "select * from ads order by id_ad", nativeQuery = true)
     List<Ad> findAllAds();
     List<Ad> findAdsByUserIdUser (Long id);
+
     List<Ad> findByTitleLikeIgnoreCase(String s);
+
+    Ad findAdsByIdAd(Long id);
 }

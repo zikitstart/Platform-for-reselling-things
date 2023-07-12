@@ -9,6 +9,8 @@ import ru.skypro.homework.model.Image;
 
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+
 @Component
 public class AdMapper {
 
@@ -45,6 +47,13 @@ public class AdMapper {
         ad.setDescription(createAdDto.getDescription());
         ad.setPrice(createAdDto.getPrice());
         ad.setTitle(createAdDto.getTitle());
+        return ad;
+    }
+
+    public Ad createAdsToAds(Ad ad, CreateAdDto createAdDto){
+        ad.setDescription(isNull(createAdDto.getDescription()) ? ad.getDescription() : createAdDto.getDescription());
+        ad.setPrice(isNull(createAdDto.getPrice()) ? ad.getPrice() : createAdDto.getPrice());
+        ad.setTitle(isNull(createAdDto.getTitle()) ? ad.getTitle() : createAdDto.getTitle());
         return ad;
     }
 }
