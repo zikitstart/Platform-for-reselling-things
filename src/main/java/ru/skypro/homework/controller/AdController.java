@@ -14,6 +14,7 @@ import ru.skypro.homework.dto.*;
 import ru.skypro.homework.model.Ad;
 import ru.skypro.homework.model.Image;
 import ru.skypro.homework.service.AdsService;
+import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.io.IOException;
 public class AdController {
 
     private final AdsService adsService;
+    private final ImageService imageService;
 
     private final UserService userService;
 
@@ -47,15 +49,16 @@ public class AdController {
     public ResponseEntity<?> createAd(@RequestPart("properties") CreateAdDto properties,
                                       @RequestPart("image") MultipartFile file,
                                       Authentication authentication) throws IOException {
-        return ResponseEntity.ok(adsService.createAd(properties, file, authentication));
+        Image image = imageService.upload(file);
+        return ResponseEntity.ok(adsService.createAd(properties, image, authentication));
     }
 
-    @GetMapping("/{idAd}")
+    @GetMapping("/{id}")
     @Operation(
             summary = "Получить информацию об объявлении"
     )
-    public ResponseEntity<FullAdDto> getInformationAboutTheAd(@PathVariable long idAd) {
-        FullAdDto fullAdDto = adsService.getFullAd(idAd);
+    public ResponseEntity<FullAdDto> getInformationAboutTheAd(@PathVariable long id) {
+        FullAdDto fullAdDto = adsService.getFullAd(id);
         return ResponseEntity.ok(fullAdDto);
     }
 
@@ -114,8 +117,7 @@ public class AdController {
         } else {
             Ad ad = adsService.findAdById(idAd);
             if (file != null) {
-                Image image = new Image();
-                image.setImage(file.getBytes());
+                Image image = imageService.upload(file);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         adsService.updateAdImage(ad, image).getImage().getImage()
                 );

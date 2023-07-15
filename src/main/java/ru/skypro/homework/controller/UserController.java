@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.model.User;
+import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
 @Slf4j
@@ -24,13 +26,21 @@ import ru.skypro.homework.service.UserService;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/set-password")
     @Operation(
             summary = "Обновление пароля"
     )
-    public ResponseEntity<Void> passwordUpdate (@RequestBody NewPasswordDto newPasswordDto) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> passwordUpdate (@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
+        User user = userService.getUser(authentication.getName());
+
+        if (!userService.isPasswordCorrect(user, newPasswordDto.currentPassword)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        UserDto modifiedUserDto = userService.setUserPassword(user, newPasswordDto);
+        return ResponseEntity.ok(modifiedUserDto);
     }
 
     @GetMapping("/me")

@@ -16,4 +16,5 @@ public interface AdRepository extends JpaRepository<Ad, Long> {
     List<Ad> findByTitleLikeIgnoreCase(String s);
 
     Ad findAdsByIdAd(Long id);
+    Ad findAdByIdAd(Long id);
 }

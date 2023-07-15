@@ -27,6 +27,9 @@ public class AdMapper {
     }
 
     public FullAdDto adsToFullAds(Ad ad) {
+        if (ad == null) {
+            return null;
+        }
         FullAdDto fullAdDto = new FullAdDto();
         fullAdDto.setPk(ad.getIdAd());
         fullAdDto.setAuthorFirstName(ad.getUser().getFirstName());

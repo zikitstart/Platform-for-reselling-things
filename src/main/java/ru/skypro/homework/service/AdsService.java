@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AdsService {
-    AdDto createAd(CreateAdDto properties, MultipartFile file, Authentication authentication) throws IOException;
+    AdDto createAd(CreateAdDto properties, Image image, Authentication authentication) throws IOException;
 
     List<AdDto> findByTitleContainingIgnoreCase(String searchTitle);
 
@@ -25,9 +25,11 @@ public interface AdsService {
 
     Ad findAdById(Long id);
 
-    void deleteAd(Long id);
+    int deleteAd(Long id);
 
     AdDto updateAd(long id, CreateAdDto createAdDto);
 
     Ad updateAdImage(Ad ad, Image image);
+
+    Ad getAdById(long id);
 }

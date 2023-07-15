@@ -37,11 +37,9 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public AdDto createAd(CreateAdDto properties, MultipartFile file, Authentication authentication) throws IOException {
+    public AdDto createAd(CreateAdDto properties, Image image, Authentication authentication) throws IOException {
         Ad ad = adMapper.CreateAdDtoToAds(properties);
         ad.setUser(userRepository.findUserByUsername(authentication.getName()).orElseThrow());
-        Image image = new Image();
-        image.setImage(file.getBytes());
         imageRepository.save(image);
         ad.setImage(image);
         adRepository.save(ad);
@@ -85,7 +83,8 @@ public class AdsServiceImpl implements AdsService {
 
     @Override
     public FullAdDto getFullAd(long id) {
-        Ad ad = adRepository.findById(id).orElseThrow();
+        Ad ad = adRepository.findAdByIdAd(id);
+        System.out.println(ad);
         return adMapper.adsToFullAds(ad);
     }
 
@@ -95,8 +94,13 @@ public class AdsServiceImpl implements AdsService {
     }
 
     @Override
-    public void deleteAd(Long id) {
-        adRepository.deleteById(id);
+    public int deleteAd(Long id) {
+        if (adRepository.findById(id).isEmpty()) {
+            return 204; // не найден
+        } else {
+            adRepository.deleteById(id);
+            return 0; // запись удалена
+        }
     }
 
     @Override
@@ -120,5 +124,10 @@ public class AdsServiceImpl implements AdsService {
 
         ad.setImage(image);
         return adRepository.saveAndFlush(ad);
+    }
+
+    @Override
+    public Ad getAdById(long id) {
+        return adRepository.findById(id).orElse(null);
     }
 }

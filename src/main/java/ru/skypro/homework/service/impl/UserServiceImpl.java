@@ -2,6 +2,7 @@ package ru.skypro.homework.service.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserDto;
@@ -36,6 +37,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getCurrentUser(String username) {
         return userMapper.userToUserDto(getUser(username));
+    }
+
+    @Override
+    public UserDto setUserPassword(User authUser, NewPasswordDto newPasswordDto) {
+        authUser.setPassword(passwordEncoder.encode(newPasswordDto.newPassword));
+        userRepository.save(authUser);
+        return userMapper.userToUserDto(authUser);
+    }
+
+    @Override
+    public boolean isPasswordCorrect(User authUser, String currentPassword) {
+        return passwordEncoder.matches(currentPassword, authUser.getPassword());
     }
 
     @Override
