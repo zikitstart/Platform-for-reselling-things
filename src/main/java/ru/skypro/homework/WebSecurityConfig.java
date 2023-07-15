@@ -20,52 +20,40 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 //Под вопрос
 public class WebSecurityConfig {
 
-  private static final String[] AUTH_WHITELIST = {
-    "/swagger-resources/**",
-    "/swagger-ui.html",
-    "/v3/api-docs",
-    "/webjars/**",
-    "/login",
-    "/register"
-  };
+    private static final String[] AUTH_WHITELIST = {
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/login",
+            "/register"
+    };
 
-  @Bean
-  public InMemoryUserDetailsManager userDetailsService() {
-    UserDetails user =
-        User.builder()
-            .username("user@gmail.com")
-            .password("password")
-            .passwordEncoder((plainText) -> passwordEncoder().encode(plainText))
-            .roles("USER")
-            .build();
-    return new InMemoryUserDetailsManager(user);
-  }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .headers().frameOptions().sameOrigin()
+                .and()
+                .csrf()
+                .disable()
+                .authorizeHttpRequests(
+                        (authorization) ->
+                                authorization
+                                        .mvcMatchers(AUTH_WHITELIST)
+                                        .permitAll()
+                                        .mvcMatchers(HttpMethod.GET, "/ads").permitAll()
+                                        .mvcMatchers("/ads/**", "/users/**").authenticated())     //Данная строка для аутентификации
+                .cors()
+                .and()
+                .httpBasic(withDefaults());
+        return http.build();
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
-            .headers().frameOptions().sameOrigin()
-            .and()
-            .csrf()
-        .disable()
-        .authorizeHttpRequests(
-            (authorization) ->
-                authorization
-                    .mvcMatchers(AUTH_WHITELIST)
-                    .permitAll()
-                        .mvcMatchers(HttpMethod.GET, "/ads").permitAll()
-                    .mvcMatchers("/ads/**", "/users/**").authenticated())     //Данная строка для аутентификации
-        .cors()
-        .and()
-        .httpBasic(withDefaults());
-    return http.build();
-  }
-
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

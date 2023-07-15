@@ -47,10 +47,6 @@ public class AdController {
     public ResponseEntity<?> createAd(@RequestPart("properties") CreateAdDto properties,
                                       @RequestPart("image") MultipartFile file,
                                       Authentication authentication) throws IOException {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         return ResponseEntity.ok(adsService.createAd(properties, file, authentication));
     }
 
@@ -58,11 +54,7 @@ public class AdController {
     @Operation(
             summary = "Получить информацию об объявлении"
     )
-    public ResponseEntity<FullAdDto> getInformationAboutTheAd(@PathVariable long idAd, Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+    public ResponseEntity<FullAdDto> getInformationAboutTheAd(@PathVariable long idAd) {
         FullAdDto fullAdDto = adsService.getFullAd(idAd);
         return ResponseEntity.ok(fullAdDto);
     }
@@ -104,10 +96,6 @@ public class AdController {
             summary = "Получить объявления авторизованного пользователя"
     )
     public ResponseEntity<?> getAdsFromAnAuthorizedUser (Authentication authentication) {
-        if (authentication == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         ResponseWrapperAdsDto responseWrapperAdsDto = adsService.findAdsByUser(authentication.getName());
         return ResponseEntity.ok(responseWrapperAdsDto);
     }

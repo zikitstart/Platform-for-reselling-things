@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
@@ -36,8 +37,9 @@ public class UserController {
     @Operation(
             summary = "Получить информацию об авторизованном пользователе"
     )
-    public ResponseEntity<UserDto> getInformationAboutAnAuthorizedUser () {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> getUser(Authentication authentication) {
+        UserDto authUser = userService.getCurrentUser(authentication.getName());
+        return ResponseEntity.ok(authUser);
     }
 
     @PatchMapping("/me")

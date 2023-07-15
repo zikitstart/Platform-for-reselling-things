@@ -4,6 +4,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
+import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
@@ -30,6 +31,11 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
         user.setRole(Objects.requireNonNullElse(role, Role.USER));
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDto getCurrentUser(String username) {
+        return userMapper.userToUserDto(getUser(username));
     }
 
     @Override
