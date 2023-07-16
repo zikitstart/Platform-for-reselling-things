@@ -2,6 +2,7 @@ package ru.skypro.homework.utils;
 
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.CommentDto;
+import ru.skypro.homework.dto.RequestWrapperCommentDto;
 import ru.skypro.homework.model.Comment;
 import ru.skypro.homework.model.Image;
 import ru.skypro.homework.model.User;
@@ -17,6 +18,14 @@ public class CommentMapper {
 
     public CommentMapper(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public Long adIdFromRequestWrapperDto(RequestWrapperCommentDto requestWrapperCommentDto) {
+        return requestWrapperCommentDto.getAdId().longValue();
+    }
+
+    public Comment commentFromRequestWrapperDto(RequestWrapperCommentDto requestWrapperCommentDto) {
+        return commentDtoToComment(requestWrapperCommentDto.getData());
     }
 
     public CommentDto commentToCommentDto(Comment comment) {

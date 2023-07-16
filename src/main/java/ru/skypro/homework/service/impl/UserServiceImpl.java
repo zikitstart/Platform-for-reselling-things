@@ -6,12 +6,14 @@ import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.model.Image;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.utils.UserMapper;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -44,6 +46,22 @@ public class UserServiceImpl implements UserService {
         authUser.setPassword(passwordEncoder.encode(newPasswordDto.newPassword));
         userRepository.save(authUser);
         return userMapper.userToUserDto(authUser);
+    }
+
+    @Override
+    public void updateUser(User authUser, UserDto userDto) {
+        User user = userMapper.userDtoToUser(userDto,authUser);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserDto loadUserImage(User user, Image image) {
+        image.setId(Optional.ofNullable(user.getImage())
+                .map(Image::getId)
+                .orElse(null));
+        user.setImage(image);
+        userRepository.save(user);
+        return userMapper.userToUserDto(user);
     }
 
     @Override

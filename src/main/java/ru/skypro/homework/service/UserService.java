@@ -4,6 +4,7 @@ import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.model.Image;
 import ru.skypro.homework.model.User;
 
 public interface UserService {
@@ -12,6 +13,10 @@ public interface UserService {
     UserDto getCurrentUser(String username);
 
     UserDto setUserPassword(User authUser, NewPasswordDto newPasswordDto);
+
+    void updateUser(User authUser, UserDto userDto);
+
+    UserDto loadUserImage(User user, Image image);
 
     boolean isPasswordCorrect(User authUser, String currentPassword);
 

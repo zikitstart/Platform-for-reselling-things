@@ -115,9 +115,9 @@ public class AdController {
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
+            Image image = imageService.upload(file);
             Ad ad = adsService.findAdById(idAd);
-            if (file != null) {
-                Image image = imageService.upload(file);
+            if (image != null) {
                 return ResponseEntity.status(HttpStatus.OK).body(
                         adsService.updateAdImage(ad, image).getImage().getImage()
                 );
@@ -134,11 +134,11 @@ public class AdController {
     }
 
     private ResponseEntity<?> checkAccess(Long id, Authentication authentication) {
-        Ad adModel = adsService.findAdById(id);
+        Ad ad = adsService.findAdById(id);
 
-        if (adModel == null) {
+        if (ad == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else if (adModel.getUser().getUsername().equals(authentication.getName()) ||
+        } else if (ad.getUser().getUsername().equals(authentication.getName()) ||
                 userService.getUser(authentication.getName()).getRole() == Role.ADMIN) {
             return ResponseEntity.ok().build();
         } else {

@@ -13,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.model.User;
-import ru.skypro.homework.service.AuthService;
+import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
+
+import java.io.IOException;
 
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000")
@@ -26,7 +28,7 @@ import ru.skypro.homework.service.UserService;
 public class UserController {
 
     private final UserService userService;
-    private final AuthService authService;
+    private final ImageService imageService;
 
     @PostMapping("/set-password")
     @Operation(
@@ -34,11 +36,9 @@ public class UserController {
     )
     public ResponseEntity<?> passwordUpdate (@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         User user = userService.getUser(authentication.getName());
-
         if (!userService.isPasswordCorrect(user, newPasswordDto.currentPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
         UserDto modifiedUserDto = userService.setUserPassword(user, newPasswordDto);
         return ResponseEntity.ok(modifiedUserDto);
     }
@@ -56,15 +56,19 @@ public class UserController {
     @Operation(
             summary = "Обновить информацию об авторизованном пользователе"
     )
-    public ResponseEntity<UserDto> updateInformationAboutAnAuthorizedUser (@RequestBody UserDto userDto) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<?> updateInformationAboutAnAuthorizedUser(@RequestBody UserDto userDto, Authentication authentication) {
+        User authUser = userService.getUser(authentication.getName());
+        userService.updateUser(authUser, userDto);
+        return ResponseEntity.ok(userDto);
     }
 
     @PatchMapping(value = "/me/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Обновить аватар авторизованного пользователя"
     )
-    public ResponseEntity<Void> updateTheAvatarOfAnAuthorizedUser (@RequestParam MultipartFile profilePicture) {
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<Void> updateTheAvatarOfAnAuthorizedUser(@RequestPart("image") MultipartFile image, Authentication authentication) throws IOException {
+        User authUser = userService.getUser(authentication.getName());
+        userService.loadUserImage(authUser, imageService.upload(image));
+        return ResponseEntity.ok().build();
     }
 }
