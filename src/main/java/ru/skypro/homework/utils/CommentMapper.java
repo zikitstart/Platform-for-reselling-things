@@ -30,7 +30,7 @@ public class CommentMapper {
 
     public CommentDto commentToCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
-        commentDto.setPk(Math.toIntExact(comment.getIdComment()));
+        commentDto.setPk(comment.getIdComment());
         commentDto.setAuthorId(Math.toIntExact(comment.getUser().getIdUser()));
         commentDto.setAuthorImage(Optional.ofNullable(comment.getUser())
                 .map(User::getImage)
@@ -44,12 +44,18 @@ public class CommentMapper {
 
     public Comment commentDtoToComment(CommentDto commentDto) {
         Comment comment = new Comment();
-        comment.setIdComment(commentDto.getPk().longValue());
-        comment.setCreatedAt(LocalDateTime.ofEpochSecond(commentDto.getCreatedAt(),0,ZoneOffset.ofHours(3)));
-        comment.setText(commentDto.getText());
-        comment.setUser(userRepository
-                .findById(commentDto.getAuthorId().longValue())
-                .orElse(null));
+        if (null != commentDto.getPk()) {
+            comment.setIdComment(commentDto.getPk());
+        }
+        if (null != commentDto.getCreatedAt()) {
+            comment.setCreatedAt(LocalDateTime.ofEpochSecond(commentDto.getCreatedAt(),0,ZoneOffset.ofHours(3)));
+        }
+        if (null != commentDto.getText()) {
+            comment.setText(commentDto.getText());
+        }
+        if (null != commentDto.getAuthorId()) {
+            comment.setUser(userRepository.findById(commentDto.getAuthorId().longValue()).orElse(null));
+        }
         return comment;
     }
 }

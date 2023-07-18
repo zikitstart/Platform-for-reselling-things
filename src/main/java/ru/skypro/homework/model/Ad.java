@@ -23,6 +23,6 @@ public class Ad {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;   //список комментариев
+//    @OneToMany(mappedBy = "ads", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Comment> comments;   //список комментариев
 }

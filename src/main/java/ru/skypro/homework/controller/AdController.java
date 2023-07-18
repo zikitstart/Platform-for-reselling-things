@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -116,13 +117,14 @@ public class AdController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } else {
             Image image = imageService.upload(file);
-            Ad ad = adsService.findAdById(idAd);
-            if (image != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        adsService.updateAdImage(ad, image).getImage().getImage()
-                );
+            Ad ad = adsService.getAdById(idAd);
+            if (null != image) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.parseMediaType(image.getMediaType()));
+                headers.setContentLength(image.getImage().length);
+                return ResponseEntity.status(HttpStatus.OK).headers(headers).body(adsService.updateAdImage(ad, image).getImage().getImage());
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                return ResponseEntity.status(HttpStatus.OK).build();
             }
         }
     }

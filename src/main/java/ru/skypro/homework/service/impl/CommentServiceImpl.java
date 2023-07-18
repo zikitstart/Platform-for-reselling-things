@@ -49,8 +49,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto addComment(RequestWrapperCommentDto requestWrapperCommentDto) {
         Long adId = commentMapper.adIdFromRequestWrapperDto(requestWrapperCommentDto);
-        Optional<Ad> adOptional =
-                adRepository.findById(adId);
+        Optional<Ad> adOptional = adRepository.findById(adId);
         if (adOptional.isEmpty()) {
             return null;
         }
@@ -59,11 +58,8 @@ public class CommentServiceImpl implements CommentService {
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUser(user);
         comment.setAds(adOptional.get());
-
         if (null == findComment(comment)) {
-            return commentMapper.commentToCommentDto(
-                    commentRepository.save(comment)
-            );
+            return commentMapper.commentToCommentDto(commentRepository.save(comment));
         }
         return null;
     }

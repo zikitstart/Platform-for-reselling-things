@@ -49,7 +49,7 @@ public class CommentController {
     @Operation(
             summary = "Удалить комментарий"
     )
-    public ResponseEntity<?> deleteCommentFromAd(@PathVariable Integer adId, @PathVariable Integer commentId, Authentication authentication) {
+    public ResponseEntity<?> deleteCommentFromAd(@PathVariable Integer adId, @PathVariable Long commentId, Authentication authentication) {
         CommentDto comment = new CommentDto();
         comment.setPk(commentId);
         comment = commentService.isMine(requestWrapperCommentDto(adId,comment,authentication)) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.deleteComment(requestWrapperCommentDto(adId,comment,authentication)) : null;
@@ -61,7 +61,7 @@ public class CommentController {
     @Operation(
             summary = "Обновить комментарий"
     )
-    private ResponseEntity<?> updateComment(@PathVariable Integer adId, @PathVariable Integer commentId, @RequestBody CommentDto comment, Authentication authentication) {
+    private ResponseEntity<?> updateComment(@PathVariable Integer adId, @PathVariable Long commentId, @RequestBody CommentDto comment, Authentication authentication) {
         comment.setPk(commentId);
         comment = commentService.isMine(requestWrapperCommentDto(adId,comment,authentication)) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.updateComment(requestWrapperCommentDto(adId,comment,authentication)) : null;
         checkResult(comment);

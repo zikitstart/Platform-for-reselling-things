@@ -2,7 +2,6 @@ package ru.skypro.homework.service.impl;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDto;
 import ru.skypro.homework.dto.CreateAdDto;
 import ru.skypro.homework.dto.FullAdDto;
@@ -84,7 +83,6 @@ public class AdsServiceImpl implements AdsService {
     @Override
     public FullAdDto getFullAd(long id) {
         Ad ad = adRepository.findAdByIdAd(id);
-        System.out.println(ad);
         return adMapper.adsToFullAds(ad);
     }
 
