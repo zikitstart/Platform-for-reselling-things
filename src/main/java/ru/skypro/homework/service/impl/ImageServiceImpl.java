@@ -33,11 +33,11 @@ public class ImageServiceImpl implements ImageService {
         String fileExtension = MimeTypeUtils.parseMimeType(detectedType).getSubtype();
         ImageIO.write(originalBufferedImage, fileExtension, byteArrayOutputStream);
         byteArrayOutputStream.flush();
-        Image imageModel = new Image();
-        imageModel.setImage(byteArrayOutputStream.toByteArray());
+        Image image = new Image();
+        image.setImage(byteArrayOutputStream.toByteArray());
         byteArrayOutputStream.close();
-        imageModel.setMediaType(detectedType);
-        return imageModel;
+        image.setMediaType(detectedType);
+        return image;
     }
 
     @Override

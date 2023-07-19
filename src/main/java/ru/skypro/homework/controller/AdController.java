@@ -107,7 +107,7 @@ public class AdController {
             summary = "Обновить картинку объявления"
     )
     public ResponseEntity<?> updateTheAdImage(@PathVariable long idAd,
-                                              @RequestParam MultipartFile file,
+                                              @RequestPart("image") MultipartFile file,
                                               Authentication authentication) throws IOException {
         ResponseEntity<?> response = checkAccess(idAd, authentication);
 
