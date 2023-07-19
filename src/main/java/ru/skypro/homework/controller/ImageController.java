@@ -1,6 +1,7 @@
 package ru.skypro.homework.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import ru.skypro.homework.service.ImageService;
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/img")
+@Tag(name = "Картинки", description = "Методы для работы с картинками")
 public class ImageController {
     private final ImageService imageService;
 
@@ -28,7 +30,6 @@ public class ImageController {
         Image imageModel = imageService.read(id);
         if (null != imageModel) {
             HttpHeaders headers = new HttpHeaders();
-            //headers.setContentType(MediaType.parseMediaType("img/*"));
             headers.setContentType(MediaType.parseMediaType(imageModel.getMediaType()));
             headers.setContentLength(imageModel.getImage().length);
             return ResponseEntity.status(HttpStatus.OK).headers(headers).body(imageModel.getImage());

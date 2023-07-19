@@ -21,7 +21,6 @@ import ru.skypro.homework.service.UserService;
 @RequiredArgsConstructor
 @RequestMapping("/ads")
 @Tag(name = "Комментарии", description = "CRUD- методы для работы с комментариями")
-//Контроллер для работы с Комментариями
 public class CommentController {
 
     private final CommentService commentService;
@@ -42,7 +41,7 @@ public class CommentController {
             summary = "Добавить комментарий к объявлению"
     )
     public ResponseEntity<?> addCommentToAd(@PathVariable Integer id, @RequestBody CommentDto comment, Authentication authentication) {
-        return ResponseEntity.ok(commentService.addComment(requestWrapperCommentDto(id,comment,authentication)));
+        return ResponseEntity.ok(commentService.addComment(requestWrapperCommentDto(id, comment, authentication)));
     }
 
     @DeleteMapping("/{adId}/comments/{commentId}")
@@ -52,8 +51,10 @@ public class CommentController {
     public ResponseEntity<?> deleteCommentFromAd(@PathVariable Integer adId, @PathVariable Long commentId, Authentication authentication) {
         CommentDto comment = new CommentDto();
         comment.setPk(commentId);
-        comment = commentService.isMine(requestWrapperCommentDto(adId,comment,authentication)) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.deleteComment(requestWrapperCommentDto(adId,comment,authentication)) : null;
-        checkResult(comment);
+        comment = commentService.isMine(requestWrapperCommentDto(adId, comment, authentication)) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.deleteComment(requestWrapperCommentDto(adId, comment, authentication)) : null;
+        if (null == comment) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -63,22 +64,18 @@ public class CommentController {
     )
     private ResponseEntity<?> updateComment(@PathVariable Integer adId, @PathVariable Long commentId, @RequestBody CommentDto comment, Authentication authentication) {
         comment.setPk(commentId);
-        comment = commentService.isMine(requestWrapperCommentDto(adId,comment,authentication)) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.updateComment(requestWrapperCommentDto(adId,comment,authentication)) : null;
-        checkResult(comment);
+        comment = commentService.isMine(requestWrapperCommentDto(adId, comment, authentication)) || userService.getUser(authentication.getName()).getRole() == Role.ADMIN ? commentService.updateComment(requestWrapperCommentDto(adId, comment, authentication)) : null;
+        if (null == comment) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
         return ResponseEntity.ok(comment);
     }
 
-    private RequestWrapperCommentDto requestWrapperCommentDto (Integer id, CommentDto commentDto, Authentication authentication){
+    private RequestWrapperCommentDto requestWrapperCommentDto(Integer id, CommentDto commentDto, Authentication authentication) {
         RequestWrapperCommentDto requestWrapperCommentDto = new RequestWrapperCommentDto();
         requestWrapperCommentDto.setAdId(id);
         requestWrapperCommentDto.setData(commentDto);
         requestWrapperCommentDto.setUsername(authentication.getName());
         return requestWrapperCommentDto;
-    }
-
-    private void checkResult(CommentDto comment) {
-        if (null == comment) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        }
     }
 }

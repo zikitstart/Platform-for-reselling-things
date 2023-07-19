@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+// Сервис для комментариев
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
@@ -33,20 +34,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    // получить комментарии
     public ResponseWrapperCommentsDto getComments(RequestWrapperCommentDto requestWrapperCommentDto) {
-        List<Comment> commentList = commentRepository
-                .findAllByAds_IdAd(commentMapper.adIdFromRequestWrapperDto(requestWrapperCommentDto));
+        List<Comment> commentList = commentRepository.findAllByAds_IdAd(commentMapper.adIdFromRequestWrapperDto(requestWrapperCommentDto));
         ResponseWrapperCommentsDto wrapperComment = new ResponseWrapperCommentsDto();
         wrapperComment.setCount(commentList.size());
-        wrapperComment.setResults(
-                commentList.stream()
-                        .map(commentMapper::commentToCommentDto)
-                        .collect(Collectors.toList())
-        );
+        wrapperComment.setResults(commentList.stream().map(commentMapper::commentToCommentDto).collect(Collectors.toList()));
         return wrapperComment;
     }
 
     @Override
+    // добавить комментарий
     public CommentDto addComment(RequestWrapperCommentDto requestWrapperCommentDto) {
         Long adId = commentMapper.adIdFromRequestWrapperDto(requestWrapperCommentDto);
         Optional<Ad> adOptional = adRepository.findById(adId);
@@ -64,15 +62,18 @@ public class CommentServiceImpl implements CommentService {
         return null;
     }
 
+    // поиск конкретного комментария по параметрам
     private Comment findComment(Comment comment) {
         return commentRepository.findDistinctFirstByTextEqualsAndUserEqualsAndAdsEquals(comment.getText(), comment.getUser(), comment.getAds()).orElse(null);
     }
 
+    // поиск комментария по id
     private Comment findCommentById(Long id) {
         return commentRepository.findById(id).orElse(null);
     }
 
     @Override
+    // является ли комментарий написан пользователем
     public boolean isMine(RequestWrapperCommentDto requestWrapperCommentDto) {
         Long id = commentMapper.commentFromRequestWrapperDto(requestWrapperCommentDto).getIdComment();
         Comment comment = findCommentById(id);
@@ -84,6 +85,7 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
+    // удаление комментария
     public CommentDto deleteComment(RequestWrapperCommentDto requestWrapperCommentDto) {
         Long id = commentMapper.commentFromRequestWrapperDto(requestWrapperCommentDto).getIdComment();
         Comment comment = findCommentById(id);
@@ -95,6 +97,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    // обновление информации комментария
     public CommentDto updateComment(RequestWrapperCommentDto requestWrapperCommentDto) {
         Long id = commentMapper.commentFromRequestWrapperDto(requestWrapperCommentDto).getIdComment();
         Comment comment = findCommentById(id);

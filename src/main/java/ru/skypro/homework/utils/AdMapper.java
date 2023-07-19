@@ -12,14 +12,13 @@ import java.util.Optional;
 import static java.util.Objects.isNull;
 
 @Component
+// Маппер для объявления
 public class AdMapper {
 
     public AdDto adToAdDto(Ad ad) {
         AdDto adDto = new AdDto();
         adDto.setAuthor(ad.getUser().getIdUser());
-        adDto.setImage(Optional.ofNullable(ad.getImage())
-                .map(Image::getPath)
-                .orElse(null));
+        adDto.setImage(Optional.ofNullable(ad.getImage()).map(Image::getPath).orElse(null));
         adDto.setPk(ad.getIdAd());
         adDto.setPrice(ad.getPrice());
         adDto.setTitle(ad.getTitle());
@@ -36,9 +35,7 @@ public class AdMapper {
         fullAdDto.setAuthorLastName(ad.getUser().getLastName());
         fullAdDto.setDescription(ad.getDescription());
         fullAdDto.setEmail(ad.getUser().getUsername());
-        fullAdDto.setImage(Optional.ofNullable(ad.getImage())
-                .map(Image::getPath)
-                .orElse(null));
+        fullAdDto.setImage(Optional.ofNullable(ad.getImage()).map(Image::getPath).orElse(null));
         fullAdDto.setPhone(ad.getUser().getPhone());
         fullAdDto.setPrice((ad.getPrice()));
         fullAdDto.setTitle(ad.getTitle());

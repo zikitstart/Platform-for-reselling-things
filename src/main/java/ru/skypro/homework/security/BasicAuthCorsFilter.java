@@ -1,4 +1,4 @@
-package ru.skypro.homework.controller;
+package ru.skypro.homework.security;
 
 
 import org.springframework.stereotype.Component;
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
-//Под вопрос
 public class BasicAuthCorsFilter extends OncePerRequestFilter {
 
     @Override

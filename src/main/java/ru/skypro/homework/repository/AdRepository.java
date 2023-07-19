@@ -8,13 +8,16 @@ import ru.skypro.homework.model.Ad;
 import java.util.List;
 
 @Repository
+// Репозиторий для объявлений
 public interface AdRepository extends JpaRepository<Ad, Long> {
     @Query(value = "select * from ads order by id_ad", nativeQuery = true)
     List<Ad> findAllAds();
-    List<Ad> findAdsByUserIdUser (Long id);
+
+    List<Ad> findAdsByUserIdUser(Long id);
 
     List<Ad> findByTitleLikeIgnoreCase(String s);
 
     Ad findAdsByIdAd(Long id);
+
     Ad findAdByIdAd(Long id);
 }

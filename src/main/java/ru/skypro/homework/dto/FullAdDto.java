@@ -3,8 +3,8 @@ package ru.skypro.homework.dto;
 import lombok.Data;
 
 @Data
+// ДТО полного объявления
 public class FullAdDto {
-
     private long pk;                // id объявления
     private String authorFirstName; // имя автора объявления
     private String authorLastName;  // фамилия автора объявления
@@ -14,5 +14,4 @@ public class FullAdDto {
     private String phone;           // телефон автора объявления
     private int price;              // цена объявления
     private String title;           // заголовок объявления
-
 }

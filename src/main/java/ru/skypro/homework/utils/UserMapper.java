@@ -9,6 +9,7 @@ import ru.skypro.homework.model.User;
 import java.util.Optional;
 
 @Component
+// Маппер для пользователя
 public class UserMapper {
 
     public UserDto userToUserDto(User user) {
@@ -17,9 +18,7 @@ public class UserMapper {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setPhone(user.getPhone());
-        dto.setImage(Optional.ofNullable(user.getImage())
-                .map(Image::getPath)
-                .orElse(null));
+        dto.setImage(Optional.ofNullable(user.getImage()).map(Image::getPath).orElse(null));
         return dto;
     }
 

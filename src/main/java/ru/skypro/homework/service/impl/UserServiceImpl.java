@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+// Сервис для пользователей
 public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    // создание пользователя
     public void createUser(RegisterUserDto registerUserDto, Role role) {
         User user = userMapper.registerUserDtoToUser(registerUserDto);
         user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
@@ -37,11 +39,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    // получение текущего пользователя
     public UserDto getCurrentUser(String username) {
         return userMapper.userToUserDto(getUser(username));
     }
 
     @Override
+    // изменение пароля пользователя
     public UserDto setUserPassword(User authUser, NewPasswordDto newPasswordDto) {
         authUser.setPassword(passwordEncoder.encode(newPasswordDto.newPassword));
         userRepository.save(authUser);
@@ -49,27 +53,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    // обновление информации о пользователе
     public void updateUser(User authUser, UserDto userDto) {
-        User user = userMapper.userDtoToUser(userDto,authUser);
+        User user = userMapper.userDtoToUser(userDto, authUser);
         userRepository.save(user);
     }
 
     @Override
+    // загрузка аватарки пользователя
     public UserDto loadUserImage(User user, Image image) {
-        image.setId(Optional.ofNullable(user.getImage())
-                .map(Image::getId)
-                .orElse(null));
+        image.setId(Optional.ofNullable(user.getImage()).map(Image::getId).orElse(null));
         user.setImage(image);
         userRepository.save(user);
         return userMapper.userToUserDto(user);
     }
 
     @Override
+    // проверка корректности пароля
     public boolean isPasswordCorrect(User authUser, String currentPassword) {
         return passwordEncoder.matches(currentPassword, authUser.getPassword());
     }
 
     @Override
+    // получение пользователя
     public User getUser(String username) {
         return userRepository.findUserByUsername(username).orElseThrow();
     }

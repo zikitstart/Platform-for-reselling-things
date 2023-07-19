@@ -24,7 +24,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @Tag(name = "Пользователи", description = "CRUD- методы для работы с пользователями")
-//Контроллер для работы с Пользователями
 public class UserController {
 
     private final UserService userService;
@@ -34,7 +33,7 @@ public class UserController {
     @Operation(
             summary = "Обновление пароля"
     )
-    public ResponseEntity<?> passwordUpdate (@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
+    public ResponseEntity<?> passwordUpdate(@RequestBody NewPasswordDto newPasswordDto, Authentication authentication) {
         User user = userService.getUser(authentication.getName());
         if (!userService.isPasswordCorrect(user, newPasswordDto.currentPassword)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -62,7 +61,7 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @PatchMapping(value = "/me/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/me/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Обновить аватар авторизованного пользователя"
     )

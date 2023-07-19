@@ -13,6 +13,7 @@ import java.time.ZoneOffset;
 import java.util.Optional;
 
 @Component
+// Маппер для комментария
 public class CommentMapper {
     private final UserRepository userRepository;
 
@@ -32,10 +33,7 @@ public class CommentMapper {
         CommentDto commentDto = new CommentDto();
         commentDto.setPk(comment.getIdComment());
         commentDto.setAuthorId(Math.toIntExact(comment.getUser().getIdUser()));
-        commentDto.setAuthorImage(Optional.ofNullable(comment.getUser())
-                .map(User::getImage)
-                .map(Image::getPath)
-                .orElse(null));
+        commentDto.setAuthorImage(Optional.ofNullable(comment.getUser()).map(User::getImage).map(Image::getPath).orElse(null));
         commentDto.setAuthorFirstName(comment.getUser().getFirstName());
         commentDto.setCreatedAt(comment.getCreatedAt().toInstant(ZoneOffset.ofHours(3)).toEpochMilli());
         commentDto.setText(comment.getText());
@@ -48,7 +46,7 @@ public class CommentMapper {
             comment.setIdComment(commentDto.getPk());
         }
         if (null != commentDto.getCreatedAt()) {
-            comment.setCreatedAt(LocalDateTime.ofEpochSecond(commentDto.getCreatedAt(),0,ZoneOffset.ofHours(3)));
+            comment.setCreatedAt(LocalDateTime.ofEpochSecond(commentDto.getCreatedAt(), 0, ZoneOffset.ofHours(3)));
         }
         if (null != commentDto.getText()) {
             comment.setText(commentDto.getText());

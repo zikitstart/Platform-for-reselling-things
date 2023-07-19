@@ -26,19 +26,17 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/ads")
 @Tag(name = "Объявления", description = "CRUD- методы для работы с обьявлениями")
-//Контроллер для работы с Объявлениями
 public class AdController {
 
     private final AdsService adsService;
     private final ImageService imageService;
-
     private final UserService userService;
 
     @GetMapping
     @Operation(
             summary = "Получение всех объявлений"
     )
-    public ResponseEntity<ResponseWrapperAdsDto> getAllAds () {
+    public ResponseEntity<ResponseWrapperAdsDto> getAllAds() {
         ResponseWrapperAdsDto responseWrapperAdsDto = adsService.findAllAds();
         return ResponseEntity.ok(responseWrapperAdsDto);
     }
@@ -67,7 +65,7 @@ public class AdController {
     @Operation(
             summary = "Удалить объявление"
     )
-    public ResponseEntity<Void> deleteAd (@PathVariable long idAd, Authentication authentication) {
+    public ResponseEntity<Void> deleteAd(@PathVariable long idAd, Authentication authentication) {
         ResponseEntity<?> response = checkAccess(idAd, authentication);
 
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
@@ -82,9 +80,9 @@ public class AdController {
     @Operation(
             summary = "Обновить информацию об объявлении"
     )
-    public ResponseEntity<AdDto> updateAdInformation (@PathVariable long idAd,
-                                                      @RequestBody CreateAdDto createAdDto,
-                                                      Authentication authentication) {
+    public ResponseEntity<AdDto> updateAdInformation(@PathVariable long idAd,
+                                                     @RequestBody CreateAdDto createAdDto,
+                                                     Authentication authentication) {
         ResponseEntity<?> response = checkAccess(idAd, authentication);
 
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
@@ -99,18 +97,18 @@ public class AdController {
     @Operation(
             summary = "Получить объявления авторизованного пользователя"
     )
-    public ResponseEntity<?> getAdsFromAnAuthorizedUser (Authentication authentication) {
+    public ResponseEntity<?> getAdsFromAnAuthorizedUser(Authentication authentication) {
         ResponseWrapperAdsDto responseWrapperAdsDto = adsService.findAdsByUser(authentication.getName());
         return ResponseEntity.ok(responseWrapperAdsDto);
     }
 
-    @PatchMapping(value = "/{idAd}/image",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{idAd}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
             summary = "Обновить картинку объявления"
     )
-    public ResponseEntity<?> updateTheAdImage (@PathVariable long idAd,
-                                                   @RequestParam MultipartFile file,
-                                                   Authentication authentication) throws IOException {
+    public ResponseEntity<?> updateTheAdImage(@PathVariable long idAd,
+                                              @RequestParam MultipartFile file,
+                                              Authentication authentication) throws IOException {
         ResponseEntity<?> response = checkAccess(idAd, authentication);
 
         if (!response.getStatusCode().equals(HttpStatus.OK)) {
@@ -129,12 +127,15 @@ public class AdController {
         }
     }
 
-    // Поиск объявлений по title с IgnoreCase
     @GetMapping("/find-by-title/{searchTitle}")
+    @Operation(
+            summary = "Поиск объявлений по заголовку"
+    )
     public ResponseEntity<?> searchAds(@PathVariable String searchTitle) {
         return ResponseEntity.ok(adsService.findByTitleContainingIgnoreCase(searchTitle));
     }
 
+    //Проверка доступов для текущего аутентифицированного пользователя
     private ResponseEntity<?> checkAccess(Long id, Authentication authentication) {
         Ad ad = adsService.findAdById(id);
 

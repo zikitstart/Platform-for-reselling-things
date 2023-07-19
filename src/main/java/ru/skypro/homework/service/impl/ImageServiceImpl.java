@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @Service
+// Сервис для картинок
 public class ImageServiceImpl implements ImageService {
 
     private final ImageRepository imageRepository;
@@ -23,17 +24,17 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    // считывание входного файла и преобразование его в image
     public Image upload(MultipartFile imageFile) throws IOException {
         BufferedImage originalBufferedImage = ImageIO.read(imageFile.getInputStream());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Tika tika = new Tika();
         String detectedType = tika.detect(imageFile.getInputStream());
         String fileExtension = MimeTypeUtils.parseMimeType(detectedType).getSubtype();
-        ImageIO.write(originalBufferedImage,fileExtension , byteArrayOutputStream);
+        ImageIO.write(originalBufferedImage, fileExtension, byteArrayOutputStream);
         byteArrayOutputStream.flush();
         Image imageModel = new Image();
         imageModel.setImage(byteArrayOutputStream.toByteArray());
-        //imageModel.setSize((long) byteArrayOutputStream.size());
         byteArrayOutputStream.close();
         imageModel.setMediaType(detectedType);
         return imageModel;
@@ -46,8 +47,8 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
+    // получить картинку по id
     public Image read(long id) {
-        return imageRepository.findById(id)
-                .orElse(null);
+        return imageRepository.findById(id).orElse(null);
     }
 }
