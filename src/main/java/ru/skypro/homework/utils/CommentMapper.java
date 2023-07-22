@@ -32,7 +32,7 @@ public class CommentMapper {
     public CommentDto commentToCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setPk(comment.getIdComment());
-        commentDto.setAuthorId(Math.toIntExact(comment.getUser().getIdUser()));
+        commentDto.setAuthor(Math.toIntExact(comment.getUser().getIdUser()));
         commentDto.setAuthorImage(Optional.ofNullable(comment.getUser()).map(User::getImage).map(Image::getPath).orElse(null));
         commentDto.setAuthorFirstName(comment.getUser().getFirstName());
         commentDto.setCreatedAt(comment.getCreatedAt().toInstant(ZoneOffset.ofHours(3)).toEpochMilli());
@@ -51,8 +51,8 @@ public class CommentMapper {
         if (null != commentDto.getText()) {
             comment.setText(commentDto.getText());
         }
-        if (null != commentDto.getAuthorId()) {
-            comment.setUser(userRepository.findById(commentDto.getAuthorId().longValue()).orElse(null));
+        if (null != commentDto.getAuthor()) {
+            comment.setUser(userRepository.findById(commentDto.getAuthor().longValue()).orElse(null));
         }
         return comment;
     }

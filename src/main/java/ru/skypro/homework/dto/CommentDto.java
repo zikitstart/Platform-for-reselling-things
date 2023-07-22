@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 // ДТО комментария
 public class CommentDto {
-    private Integer authorId;            // id автора комментария
+    private Integer author;            // id автора комментария
     private String authorImage;          // ссылка на аватар автора комментария
     private String authorFirstName;      // имя создателя комментария
     private Long createdAt;              // дата и время создания комментария

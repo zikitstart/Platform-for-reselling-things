@@ -138,7 +138,6 @@ public class AdController {
     //Проверка доступов для текущего аутентифицированного пользователя
     private ResponseEntity<?> checkAccess(Long id, Authentication authentication) {
         Ad ad = adsService.findAdById(id);
-
         if (ad == null) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else if (ad.getUser().getUsername().equals(authentication.getName()) ||

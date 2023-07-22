@@ -29,7 +29,7 @@ public class UserController {
     private final UserService userService;
     private final ImageService imageService;
 
-    @PostMapping("/set-password")
+    @PostMapping("/set_password")
     @Operation(
             summary = "Обновление пароля"
     )
