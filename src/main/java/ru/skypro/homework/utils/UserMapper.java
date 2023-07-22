@@ -9,25 +9,20 @@ import ru.skypro.homework.model.User;
 import java.util.Optional;
 
 @Component
+// Маппер для пользователя
 public class UserMapper {
 
     public UserDto userToUserDto(User user) {
         UserDto dto = new UserDto();
         dto.setId(user.getIdUser());
-        dto.setEmail(user.getUsername());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setPhone(user.getPhone());
-        dto.setImage(Optional.ofNullable(user.getImage())
-                .map(Image::getPath)
-                .orElse(null));
+        dto.setImage(Optional.ofNullable(user.getImage()).map(Image::getPath).orElse(null));
         return dto;
     }
 
-    public User userDtoToUser(UserDto userDto) {
-        User user = new User();
-        user.setIdUser(userDto.getId());
-        user.setUsername(userDto.getEmail());
+    public User userDtoToUser(UserDto userDto,User user) {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setPhone(userDto.getPhone());
