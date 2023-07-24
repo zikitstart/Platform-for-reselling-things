@@ -1,7 +1,9 @@
 package ru.skypro.homework.service.impl;
 
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.NewPasswordDto;
 import ru.skypro.homework.dto.RegisterUserDto;
@@ -10,6 +12,7 @@ import ru.skypro.homework.dto.UserDto;
 import ru.skypro.homework.model.Image;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.security.UserPrincipal;
 import ru.skypro.homework.service.UserService;
 import ru.skypro.homework.utils.UserMapper;
 
@@ -19,7 +22,6 @@ import java.util.Optional;
 @Service
 // Сервис для пользователей
 public class UserServiceImpl implements UserService {
-
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -79,5 +81,36 @@ public class UserServiceImpl implements UserService {
     // получение пользователя
     public User getUser(String username) {
         return userRepository.findUserByUsername(username).orElseThrow();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findUserByUsername(username).orElseThrow();
+        return new UserPrincipal(userMapper.userToUserPrincipalDto(user));
+    }
+
+    @Override
+    public void createUser(UserDetails user) {
+
+    }
+
+    @Override
+    public void updateUser(UserDetails user) {
+
+    }
+
+    @Override
+    public void deleteUser(String username) {
+
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword) {
+
+    }
+
+    @Override
+    public boolean userExists(String username) {
+        return userRepository.findUserByUsername(username).isPresent();
     }
 }

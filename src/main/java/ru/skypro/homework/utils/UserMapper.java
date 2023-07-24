@@ -3,6 +3,7 @@ package ru.skypro.homework.utils;
 import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.UserDto;
+import ru.skypro.homework.dto.UserPrincipalDto;
 import ru.skypro.homework.model.Image;
 import ru.skypro.homework.model.User;
 
@@ -38,5 +39,13 @@ public class UserMapper {
         user.setPhone(registerUserDto.getPhone());
         user.setRole(registerUserDto.getRole());
         return user;
+    }
+
+    public UserPrincipalDto userToUserPrincipalDto(User user) {
+        return new UserPrincipalDto()
+                .withId(user.getIdUser())
+                .withUsername(user.getUsername())
+                .withPassword(user.getPassword())
+                .withRole(user.getRole());
     }
 }
