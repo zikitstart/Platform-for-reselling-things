@@ -21,6 +21,14 @@ Backend - web-сервиса по перепродаже вещей на Java Sp
 
 ---
 
+## Сборка проекта:
+* mvn clean install -DskipTests=true - сборка jar проекта
+* docker-compose build - сборка докер образа
+* docker-compose up - поднять контейнеры
+* docker-compose down - выключить контейнеры
+
+---
+
 ## Команда разработчиков:
 * [Завьялов Дмитрий](https://github.com/Jokeproofee)
 * [Осипов Андрей](https://github.com/zikitstart)
