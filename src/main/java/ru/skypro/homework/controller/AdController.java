@@ -27,7 +27,6 @@ import java.io.IOException;
 @RequestMapping("/ads")
 @Tag(name = "Объявления", description = "CRUD- методы для работы с обьявлениями")
 public class AdController {
-
     private final AdsService adsService;
     private final ImageService imageService;
     private final UserService userService;

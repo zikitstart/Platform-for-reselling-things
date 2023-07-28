@@ -5,20 +5,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.skypro.homework.dto.RegisterUserDto;
 import ru.skypro.homework.dto.Role;
-import ru.skypro.homework.security.UserDetailsManagerImpl;
 import ru.skypro.homework.service.AuthService;
 import ru.skypro.homework.service.UserService;
 
 @Service
 // Сервис для авторизации
 public class AuthServiceImpl implements AuthService {
-
-    private final UserDetailsManagerImpl manager;
     private final PasswordEncoder encoder;
+
     private final UserService userService;
 
-    public AuthServiceImpl(UserDetailsManagerImpl manager, PasswordEncoder passwordEncoder, UserService userService) {
-        this.manager = manager;
+    public AuthServiceImpl(PasswordEncoder passwordEncoder, UserService userService) {
         this.encoder = passwordEncoder;
         this.userService = userService;
     }
@@ -26,17 +23,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     // Авторизация пользователя
     public boolean login(String username, String password) {
-        if (!manager.userExists(username.toLowerCase())) {
+        if (!userService.userExists(username.toLowerCase())) {
             return false;
         }
-        UserDetails userDetails = manager.loadUserByUsername(username.toLowerCase());
+        UserDetails userDetails = userService.loadUserByUsername(username.toLowerCase());
         return encoder.matches(password, userDetails.getPassword());
     }
 
     @Override
     // Регистрация пользователя
     public boolean register(RegisterUserDto registerUserDto, Role role) {
-        if (manager.userExists(registerUserDto.getUsername())) {
+        if (userService.userExists(registerUserDto.getUsername())) {
             return false;
         }
         userService.createUser(registerUserDto, role);
